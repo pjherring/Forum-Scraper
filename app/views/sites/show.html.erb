@@ -15,20 +15,28 @@
   <%= @site.last_updated %>
 </p>
 
-<p>
-  <b>Username:</b>
-  <%= @site.username %>
-</p>
+<% unless @site.username.nil? || @site.password.nil? %>
+  <p>
+    <b>Username:</b>
+    <%= @site.username %>
+  </p>
 
-<p>
-  <b>Password:</b>
-  <%= @site.password %>
-</p>
-
-<% @site.forums.each do |forum| %>
-  <%= link_to forum.name, forum %>
+  <p>
+    <b>Password:</b>
+    <%= @site.password %>
+  </p>
 <% end %>
 
-<%= link_to 'Fetch Forums', fetch_forums_path(@site) %>
+<%= link_to 'Fetch Forums', fetch_forums_site_path(@site) %>
 <%= link_to 'Edit', edit_site_path(@site) %> |
 <%= link_to 'Back', sites_path %>
+
+<% if @site.forums.size > 0 %>
+  <h3>Forums</h3>
+  <ol>
+  <% @site.forums.each do |forum| %>
+      <li><%= link_to forum.name, forum %></li>
+  <% end %>
+  </ol>
+<% end%>
+
