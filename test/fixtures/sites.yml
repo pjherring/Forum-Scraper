@@ -1,0 +1,55 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: shamikh
+  url: http://www.shamikh1.info/vb/
+  username: ansar.tawhid.jihad
+  password: ansariarabi
+
+two:
+  name: hanein
+  url: http://hanein.info/vb/
+
+three:
+  name: aljahad
+  url: http://www.aljahad.com/vb/
+
+four:
+  name: ummah
+  url: http://ummah.com/forum/
+
+five:
+  name: almoltaqa
+  url: http://almoltaqa.ps/english/
+
+six:
+  name: eljnoub
+  url: http://www.eljnoub.net/vb/
+
+seven:
+  name: atahadi.net
+  url: http://www.atahadi.net/vb/
+
+eight:
+  name: haqqforum
+  url: http://www.haqqforum.com/vb/
+
+nine:
+  name: kavkazchat
+  url: http://kavkazchat.com/
+
+ten:
+  name: muslm.net
+  url: http://muslm.net/vb/
+
+eleven:
+  name: alqimmah
+  url: http://al-qimmah.net/
+
+twelve:
+  name: aljahafal
+  url: http://al-jahafal.com/vb/
+
+thirteen:
+  name: alboraq
+  url: http://www.alboraq.info/

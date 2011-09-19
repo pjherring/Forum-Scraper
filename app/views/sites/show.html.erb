@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @site.name %>
+</p>
+
+<p>
+  <b>Url:</b>
+  <%= @site.url %>
+</p>
+
+<p>
+  <b>Last updated:</b>
+  <%= @site.last_updated %>
+</p>
+
+<p>
+  <b>Username:</b>
+  <%= @site.username %>
+</p>
+
+<p>
+  <b>Password:</b>
+  <%= @site.password %>
+</p>
+
+<% @site.forums.each do |forum| %>
+  <%= link_to forum.name, forum %>
+<% end %>
+
+<%= link_to 'Fetch Forums', fetch_forums_path(@site) %>
+<%= link_to 'Edit', edit_site_path(@site) %> |
+<%= link_to 'Back', sites_path %>

@@ -1,0 +1,67 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: some topic
+  vb_id: 122885
+  last_updated: null
+  forum: one
+
+two:
+  name: pig makes a mockery
+  vb_id: 106338
+  forum: two
+
+three:
+  name: aljahad forum
+  vb_id: 9854
+  forum: three
+
+four:
+  name: ummah topic
+  vb_id: 69613
+  forum: four
+
+five:
+  name: almoltaqa
+  vb_id: 39
+  forum: five
+
+six:
+  name: eljnoub topic
+  vb_id: 66182
+  forum: six
+
+seven:
+  name: atahadi topic
+  vb_id: 21
+  forum: seven
+
+eight:
+  name: haqqforum topic
+  vb_id: 10751
+  forum: eight
+
+nine:
+  name: kavkazchat topic
+  vb_id: 3881
+  forum: nine
+
+ten:
+  name: muslm.net topic
+  vb_id: 147262
+  forum: ten
+
+eleven:
+  name: alqimmah topic
+  vb_id: 20
+  forum: eleven
+
+twelve:
+  name: aljahafal
+  vb_id: 600
+  forum: twelve
+
+thirteen:
+  name: alboraq
+  vb_id: 263
+  forum: thirteen

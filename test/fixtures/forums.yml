@@ -1,0 +1,66 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: forum name
+  vb_id: 45
+  site: one 
+
+two:
+  name: hanein forum
+  vb_id: 4
+  site: two
+
+three: 
+  name: aljahad forum
+  vb_id: 2
+  site: three
+
+four: 
+  name: ummah forum
+  vb_id: 142
+  site: four
+
+five:
+  name: almoltaqa
+  vb_id: 3
+  site: five
+
+six:
+  name: eljnoub forum
+  vb_id: 72
+  site: six
+
+seven:
+  name: atahadi forum
+  vb_id: 31
+  site: seven
+
+eight:
+  name: haqqforum forum
+  vb_id: 210
+  site: eight
+
+nine:
+  name: kavkazchat forum
+  vb_id: 65
+  site: nine
+
+ten:
+  name: muslm.net forum
+  vb_id: 26
+  site: ten
+
+eleven:
+  name: alqimmah forum
+  vb_id: 6
+  site: eleven
+
+twelve:
+  name: aljahal forum
+  vb_id: 34
+  site: twelve
+
+thirteen:
+  name: alboraq
+  vb_id: 4
+  site: thirteen
