@@ -17,6 +17,7 @@ group :assets do
   gem 'uglifier'
 end
 
+gem 'therubyracer'
 gem 'jquery-rails'
 gem 'rest-client'
 gem 'nokogiri'
