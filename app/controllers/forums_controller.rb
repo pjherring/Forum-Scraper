@@ -1,4 +1,6 @@
 class ForumsController < ApplicationController
+
+  MAX_TOPICS_TO_SHOW = 25
   # GET /forums
   # GET /forums.json
   def index
@@ -14,6 +16,21 @@ class ForumsController < ApplicationController
   # GET /forums/1.json
   def show
     @forum = Forum.find(params[:id])
+
+=begin
+    if params.key?(:topic_start)
+      floor = params[:topic_start]
+      floor = 0 if floor > @forum.topics.size
+      ceiling = start + MAX_TOPICS_TO_SHOW
+      ceiling = @forum.topics.size - 1 if celing > @forum.topics.size
+      @topics = @forum.topics[floor..ceiling]
+
+    else
+      max = MAX_TOPICS_TO_SHOW
+      max = @forum.topics.size if max > @forum.topics.size
+      @topics = @forum.topics[0..max]
+    end
+=end
 
     respond_to do |format|
       format.html # show.html.erb
