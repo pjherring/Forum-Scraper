@@ -17,6 +17,8 @@ class Forum < ActiveRecord::Base
         topic.save!
       end
 
+      topic.fetch_messages
+
     end
   end
   handle_asynchronously :fetch_topics
