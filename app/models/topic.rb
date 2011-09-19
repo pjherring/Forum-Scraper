@@ -11,7 +11,7 @@ class Topic < ActiveRecord::Base
 
     messages.each do |message|
 
-      if self.site.last_updated.nil? || message.posted_at > self.site.last_updated
+      if self.forum.site.last_updated.nil? || message.posted_at > self.forum.site.last_updated
         message.save
       end
 
@@ -19,10 +19,6 @@ class Topic < ActiveRecord::Base
 
   end
   handle_asynchronously :fetch_messages
-
-  def site
-    return self.topic.forum.site
-  end
 
   def scraper
     return self.forum.site.scraper
