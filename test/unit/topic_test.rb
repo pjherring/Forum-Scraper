@@ -42,4 +42,17 @@ class TopicTest < ActiveSupport::TestCase
     assert_equal Delayed::Job.count, 1, 'delayed has no jobs'
   end
 
+  test "a topic should scrape messages" do
+    topic = topics(:one)
+    topic.messages = []
+
+    topic.save!
+
+    assert topic.messages.count == 0, 'topic has messages after deleting all messages'
+
+    topic.fetch_messages_without_delay
+
+    assert topic.messages(true).count > 0, 'topic has no messages'
+  end
+
 end
