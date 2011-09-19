@@ -1,25 +1,19 @@
 <p id="notice"><%= notice %></p>
 
 <p>
+  <b>Site:</b>
+  <%= link_to @forum.site.name, @forum.site %>
+</p>
+
+<p>
   <b>Name:</b>
   <%= @forum.name %>
 </p>
 
-<p>
-  <b>Url:</b>
-  <%= @forum.url %>
-</p>
-
-<p>
-  <b>Last updated:</b>
-  <%= @forum.last_updated %>
-</p>
-
-<p>
-  <b>Site:</b>
-  <%= @forum.site %>
-</p>
-
-
-<%= link_to 'Edit', edit_forum_path(@forum) %> |
-<%= link_to 'Back', forums_path %>
+<% unless @forum.topics.size == 0 %>
+  <ol>
+    <% @forum.topics.each do |topic| %>
+      <li><%= link_to topic.name, topic %><li>
+    <% end %>
+  </ol>
+<% end %>
