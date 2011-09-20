@@ -1,0 +1,30 @@
+<% unless @topics.size == 0 %>
+  <h3>Topics</h3>
+  <table>
+    <% @topics.each_with_index do |topic, i| %>
+      <% if i % 3 == 0 %>
+        <tr>
+      <% end %>
+        <td><%= link_to topic.name, topic %></td>
+      <% if (i % 3 == 2) || (i + 1) == @topics.size %>
+        </tr>
+      <% end %>
+    <% end %>
+  </table>
+  </ol>
+
+  <% if @forum.topics.count > ForumsController::MAX_TOPICS_TO_SHOW %>
+    <div class="paginator">
+      <ul>
+        <% (1..((@forum.topics.count / ForumsController::MAX_TOPICS_TO_SHOW) + 1)).each do |page| %>
+          <% @page ||= 1 %>
+          <% if @page == page %>
+            <li><span><%= page %></span></li>
+          <% else %>
+            <li><%= link_to page, paginate_forum_path(@forum, { :page => page }), :remote => true %></li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% end %>
