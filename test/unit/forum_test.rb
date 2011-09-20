@@ -26,21 +26,15 @@ class ForumTest < ActiveSupport::TestCase
     assert forum.valid?, 'forum is not valid with vb id being a number'
   end
 
-  test "a forum should be able to asynchronously scrape topics" do
+  test "a forum should be able to scrape topics" do
     forum = forums(:one)
-    forum.topics = []
-    forum.save!
+    forum.topics.destroy_all
 
-    Delayed::Job.destroy_all
-
-    assert forum.topics.size == 0, 'forum has topics after deleting all topics'
+    assert_equal 0, forum.topics.count, 'forum has more than 0 topics'
 
     forum.fetch_topics
 
-    assert forum.topics(true).size == 0, 'forum does not have any topics after scrape'
-
-    assert Delayed::Job.count == 1, 'delayed jobs has no jobs'
-
+    assert_not_equal 0, forum.topics(true).count, 'forum has 0 topics'
   end
 
 end

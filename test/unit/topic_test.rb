@@ -26,22 +26,6 @@ class TopicTest < ActiveSupport::TestCase
     assert topic.valid?, 'topic is not valid with vb id being a number'
   end
 
-  test "a topic should scrape messages async" do
-    topic = topics(:one)
-    topic.messages = []
-    topic.save!
-
-    assert topic.messages.size == 0, 'topic has messages after deleting all messages'
-
-    Delayed::Job.destroy_all
-
-    assert_equal Delayed::Job.count, 0, 'still has delayed jobs'
-
-    topic.fetch_messages
-
-    assert_equal Delayed::Job.count, 1, 'delayed has no jobs'
-  end
-
   test "a topic should scrape messages" do
     topic = topics(:one)
     topic.messages = []
@@ -50,7 +34,7 @@ class TopicTest < ActiveSupport::TestCase
 
     assert topic.messages.count == 0, 'topic has messages after deleting all messages'
 
-    topic.fetch_messages_without_delay
+    topic.fetch_messages
 
     assert topic.messages(true).count > 0, 'topic has no messages'
   end
