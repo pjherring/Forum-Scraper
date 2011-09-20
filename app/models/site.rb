@@ -16,6 +16,7 @@ class Site < ActiveRecord::Base
         forum.save
       end
 
+      Rails.logger.info "about to fetch topics for #{forum.vb_id}"
       forum.fetch_topics
 
     end

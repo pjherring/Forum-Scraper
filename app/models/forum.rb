@@ -7,9 +7,11 @@ class Forum < ActiveRecord::Base
   validates :vb_id, :numericality => true
 
   def fetch_topics
+    Rails.logger.info "HERE"
     self.scraper.can_scrape or self.scraper.login
 
     topics = self.scraper.fetch_topics(self)
+    Rails.logger.info topics.inspect
     
     topics.each do |topic|
 
@@ -17,11 +19,11 @@ class Forum < ActiveRecord::Base
         topic.save!
       end
 
+      Rails.logger.info "about to fetch messages for #{topic.vb_id}"
       topic.fetch_messages
-
     end
+
   end
-  handle_asynchronously :fetch_topics
 
   def scraper
     return self.site.scraper

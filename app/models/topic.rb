@@ -18,7 +18,6 @@ class Topic < ActiveRecord::Base
     end
 
   end
-  handle_asynchronously :fetch_messages
 
   def scraper
     return self.forum.site.scraper
