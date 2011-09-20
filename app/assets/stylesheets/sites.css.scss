@@ -1,3 +1,28 @@
 // Place all the styles related to the sites controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+div.paginator {
+
+  ul {
+    list-style-type: none;
+
+    li {
+      float: left;
+      margin: 0px 5px;
+      font: {
+        size: 16px;
+      }
+
+      a {
+        color: blue;
+      }
+
+      span {
+        color: white;
+        background: black;
+      }
+    }
+  }
+
+
+}
