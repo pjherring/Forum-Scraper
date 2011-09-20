@@ -14,7 +14,7 @@
         <% (1..((@site.forums.count / SitesController::MAX_FORUM_SHOW) + 1)).each do |page| %>
           <% @page ||= 1 %>
           <% if @page == page %>
-            <li><%= page %></li>
+            <li><span><%= page %></span></li>
           <% else %>
             <li><%= link_to page, paginate_site_path(@site, { :page => page }), :remote => true %></li>
           <% end %>

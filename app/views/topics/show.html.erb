@@ -12,13 +12,15 @@
 
 <% unless @topic.messages.size == 0 %>
   <h3>Messages<h3>
+  <table>
     <% @topic.messages.each do |message| %>
-      <div>
-        <ul>
-          <li>Posted By: <%= message.posted_by %></li>
-          <li>Posted At: <%= message.posted_at %><li>
-          <li><%= message.text %><li>
-        <ul>
+      <tr>
+        <td>Posted By: <%= message.posted_by %></li>
+        <td>Posted At: <%= message.posted_at %><li>
+      </tr>
+      <tr>
+        <td><%= message.text %></td>
+      </tr>
       </div>
     <% end %>
 <% end %>
