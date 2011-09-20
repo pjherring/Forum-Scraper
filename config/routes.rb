@@ -3,7 +3,11 @@ Fp::Application.routes.draw do
 
   resources :topics
 
-  resources :forums
+  resources :forums do
+    member do
+      get 'paginate'
+    end
+  end
 
   resources :sites do
     member do

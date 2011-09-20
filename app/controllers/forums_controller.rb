@@ -1,6 +1,7 @@
 class ForumsController < ApplicationController
 
-  MAX_TOPICS_TO_SHOW = 25
+  MAX_TOPICS_TO_SHOW = 100
+
   # GET /forums
   # GET /forums.json
   def index
@@ -16,21 +17,8 @@ class ForumsController < ApplicationController
   # GET /forums/1.json
   def show
     @forum = Forum.find(params[:id])
-
-=begin
-    if params.key?(:topic_start)
-      floor = params[:topic_start]
-      floor = 0 if floor > @forum.topics.size
-      ceiling = start + MAX_TOPICS_TO_SHOW
-      ceiling = @forum.topics.size - 1 if celing > @forum.topics.size
-      @topics = @forum.topics[floor..ceiling]
-
-    else
-      max = MAX_TOPICS_TO_SHOW
-      max = @forum.topics.size if max > @forum.topics.size
-      @topics = @forum.topics[0..max]
-    end
-=end
+    @topics = @forum.topics[0..MAX_TOPICS_TO_SHOW]
+    @page = 1
 
     respond_to do |format|
       format.html # show.html.erb
@@ -97,4 +85,26 @@ class ForumsController < ApplicationController
       format.json { head :ok }
     end
   end
+
+  def paginate
+
+    if params.key?(:page) && !params[:page].nil?
+      @forum = Forum.find(params[:id])
+      @page = params[:page].to_i
+      index_start = (@page - 1) * MAX_TOPICS_TO_SHOW
+      index_end = index_start + MAX_TOPICS_TO_SHOW - 1
+      index_start = 0 if index_start > @forum.topics.count
+      index_end = @forum.topics.count if index_end > @forum.topics.count
+      @topics = @forum.topics[index_start..index_end]
+
+      respond_to do |format|
+        format.html { redirect_to @forum }
+        format.js
+      end
+    else
+      render :bad_request
+    end
+
+  end
+
 end

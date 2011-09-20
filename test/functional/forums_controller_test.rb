@@ -5,45 +5,58 @@ class ForumsControllerTest < ActionController::TestCase
     @forum = forums(:one)
   end
 
-  test "should get index" do
-    get :index
-    assert_response :success
-    assert_not_nil assigns(:forums)
-  end
+  test "I can paginate through topics in a forum" do
+    @forum.topics.destroy_all
 
-  test "should get new" do
-    get :new
-    assert_response :success
-  end
-
-  test "should create forum" do
-    assert_difference('Forum.count') do
-      post :create, :forum => @forum.attributes
+    (1..5).each do |i|
+      t = Topic.new
+      t.vb_id = i
+      t.name = 'topic ' + i.to_s
+      t.forum = @forum
+      t.save!
     end
 
-    assert_redirected_to forum_path(assigns(:forum))
-  end
+    assert_equal 5, @forum.topics(true).count, 'forum does not have 5 topics'
 
-  test "should show forum" do
-    get :show, :id => @forum.to_param
+    get :paginate, { :page => 1, :id => @forum.id, :format => :js }
     assert_response :success
-  end
+    assert_not_nil assigns(:page), 'page is nil'
+    assert_not_nil assigns(:topics), 'topics is nil'
+    assert_not_nil assigns(:forum), 'forum is nil'
+    assert_equal 5, assigns(:topics).count, 'topics.count is not 5'
 
-  test "should get edit" do
-    get :edit, :id => @forum.to_param
-    assert_response :success
-  end
+    @forum.topics.destroy_all
 
-  test "should update forum" do
-    put :update, :id => @forum.to_param, :forum => @forum.attributes
-    assert_redirected_to forum_path(assigns(:forum))
-  end
-
-  test "should destroy forum" do
-    assert_difference('Forum.count', -1) do
-      delete :destroy, :id => @forum.to_param
+    (1..504).each do |i|
+      t = Topic.new
+      t.vb_id = i
+      t.name = 'topic ' + i.to_s
+      t.forum = @forum
+      t.save!
     end
 
-    assert_redirected_to forums_path
+    assert_equal 504, @forum.topics(true).count, 'forum does not have 5 topics'
+
+    get :paginate, { :page => 1, :id => @forum.id, :format => :js }
+    assert_response :success
+    assert_not_nil assigns(:page), 'page is nil'
+    assert_not_nil assigns(:topics), 'topics is nil'
+    assert_not_nil assigns(:forum), 'forum is nil'
+    assert_equal 100, assigns(:topics).count, 'topics.count is not 100'
+
+    get :paginate, { :page => 3, :id => @forum.id, :format => :js }
+    assert_response :success
+    assert_not_nil assigns(:page), 'page is nil'
+    assert_not_nil assigns(:topics), 'topics is nil'
+    assert_not_nil assigns(:forum), 'forum is nil'
+    assert_equal 100, assigns(:topics).count, 'topics.count is not 100'
+
+    get :paginate, { :page => 5, :id => @forum.id, :format => :js }
+    assert_response :success
+    assert_not_nil assigns(:page), 'page is nil'
+    assert_not_nil assigns(:topics), 'topics is nil'
+    assert_not_nil assigns(:forum), 'forum is nil'
+    assert_equal 4, assigns(:topics).count, 'topics.count is not 4'
   end
+
 end
