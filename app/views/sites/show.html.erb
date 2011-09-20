@@ -31,12 +31,6 @@
 <%= link_to 'Edit', edit_site_path(@site) %> |
 <%= link_to 'Back', sites_path %>
 
-<% if @site.forums.size > 0 %>
-  <h3>Forums</h3>
-  <ol>
-  <% @site.forums.each do |forum| %>
-      <li><%= link_to forum.name, forum %></li>
-  <% end %>
-  </ol>
-<% end%>
-
+<div id="forum_list">
+  <%= render :partial => 'paginator' %>
+</div>

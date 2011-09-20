@@ -1,4 +1,7 @@
 class SitesController < ApplicationController
+
+  MAX_FORUM_SHOW = 25
+
   # GET /sites
   # GET /sites.json
   def index
@@ -14,11 +17,38 @@ class SitesController < ApplicationController
   # GET /sites/1.json
   def show
     @site = Site.find(params[:id])
+    @forums = @site.forums[0..MAX_FORUM_SHOW]
 
     respond_to do |format|
       format.html # show.html.erb
       format.json { render :json => @site }
     end
+  end
+
+  def paginate
+    @site = Site.find(params[:id])
+    page = params[:page].to_i - 1
+    index_start = (page * MAX_FORUM_SHOW)
+    index_end = index_start + MAX_FORUM_SHOW
+
+    #make sure our start is not greater than the total count
+    index_start = 0 if index_start > @site.forums.count
+    index_end = @site.forums.count if  index_end > @site.forums.count
+
+    Rails.logger.info "Slicing #{index_start}, #{index_end}"
+
+    #decrement to account for 0 base indexing
+    index_end -= 1
+
+    @forums = @site.forums[index_start..index_end]
+    #increment for rendering of view
+    @page = page + 1
+
+    respond_to do |format|
+      format.html { redirect_to @site, :notice => 'Error' }
+      format.js 
+    end
+
   end
 
   # GET /sites/new

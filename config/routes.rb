@@ -7,9 +7,9 @@ Fp::Application.routes.draw do
 
   resources :sites do
     member do
+      get 'paginate'
       get 'fetch_forums'
     end
-
   end
 
 

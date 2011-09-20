@@ -1,0 +1,25 @@
+<% if @site.forums.size > 0 %>
+  <h3>Forums</h3>
+  <div class="forums">
+    <ol>
+    <% !@forums.nil? and @forums.each do |forum| %>
+        <li><%= link_to forum.name, forum %></li>
+    <% end %>
+    </ol>
+  </div>
+
+  <% if @site.forums.count > SitesController::MAX_FORUM_SHOW %>
+    <div class="paginator">
+      <ul>
+        <% (1..((@site.forums.count / SitesController::MAX_FORUM_SHOW) + 1)).each do |page| %>
+          <% @page ||= 1 %>
+          <% if @page == page %>
+            <li><%= page %></li>
+          <% else %>
+            <li><%= link_to page, paginate_site_path(@site, { :page => page }), :remote => true %></li>
+          <% end %>
+        <% end %>
+      <ul>
+    </div>
+  <% end %>
+<% end%>

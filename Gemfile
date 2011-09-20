@@ -36,7 +36,4 @@ gem 'delayed_job'
 group :test do
   # Pretty printed test output
   gem 'turn', :require => false
-  gem 'rspec-rails'
-  gem 'rspec'
-  gem 'cucumber'
 end
