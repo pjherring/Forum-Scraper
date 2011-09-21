@@ -78,7 +78,7 @@ module Scraper
           @cookies = login_response.cookies
           @can_scrape = true
         else
-          @can_scrape = response.code == 200
+          @can_scrape = response[:code] == 200
         end
 
       end
