@@ -1,9 +1,7 @@
 class Topic < ActiveRecord::Base
+
   belongs_to :forum
   has_many :messages
-
-  validates :vb_id, :name, :forum, :presence => true
-  validates :vb_id, :numericality => true
 
   def fetch_messages
     self.scraper.can_scrape or self.scraper.login

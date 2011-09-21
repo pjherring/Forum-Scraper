@@ -3,9 +3,6 @@ class Forum < ActiveRecord::Base
   belongs_to :site
   has_many :topics
 
-  validates :vb_id, :name, :site, :presence => true
-  validates :vb_id, :numericality => true
-
   def fetch_topics
     Rails.logger.info "HERE"
     self.scraper.can_scrape or self.scraper.login
@@ -18,7 +15,6 @@ class Forum < ActiveRecord::Base
         topic.save!
       end
 
-      Rails.logger.info "about to fetch messages for #{topic.vb_id}"
       topic.fetch_messages
     end
 

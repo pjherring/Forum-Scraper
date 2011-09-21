@@ -46,6 +46,7 @@ module Scraper
       @site = site
       @can_scrape = false
       @limit = limit
+      @iconv = Iconv.new('UTF-8//IGNORE', 'UTF-8')
     end
 
     def login
@@ -107,6 +108,8 @@ module Scraper
           name = forum_link.content
 
           new_forum  = Forum.new :vb_id => vb_id, :name => name, :site => @site, :last_updated => nil 
+          Rails.logger.info new_forum.inspect
+
           forums.push(new_forum)
           #Rails.logger.info "Found forum of #{new_forum.site.url} with vb id #{new_forum.vb_id}"
         end
@@ -170,8 +173,8 @@ module Scraper
           name = topic.content
 
           new_topic = Topic.new :vb_id => vb_id, :name => name, :forum => forum, :last_updated => nil
+          Rails.logger.info new_topic.inspect
           topics.push(new_topic)
-          #Rails.logger.info "got a topic from #{new_topic.forum.site.url} with vb_id #{new_topic.vb_id}"
 
         end
 
@@ -186,9 +189,9 @@ module Scraper
 
       if is_homepage(html)
         begin
-          html = fetch_html(@site.url + Scraper::BASE_TOPIC_DISPLAY_URL + topic.vb_id)[:doc]
+          html = fetch_html(@site.url + Scraper::BASE_TOPIC_DISPLAY_URL + topic.vb_id.to_s)[:doc]
         rescue
-          html = fetch_html(@site.url + Scraper::BASE_TOPIC_DISPLAY_URL.match(/(.*)t=/)[1].to_s + topic.vb_id)[:doc]
+          html = fetch_html(@site.url + Scraper::BASE_TOPIC_DISPLAY_URL.match(/(.*)t=/)[1].to_s + topic.vb_id.to_s)[:doc]
         end
 
       end
@@ -210,9 +213,7 @@ module Scraper
               posted_by = post.css(format[:posted_by])
 
 
-              posted_at = post.css(format[:posted_at]).text
-              ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
-              posted_at = ic.iconv(posted_at + ' ')[0..-2]
+              posted_at = @iconv.iconv(post.css(format[:posted_at]).text + ' ')[0..-2]
 
               text = post.css(format[:text]).text
 
@@ -235,6 +236,15 @@ module Scraper
     end
 
     protected #all methods below are protected
+
+    def to_text(element, default)
+      begin
+        return @iconv.iconv(element.content + ' ')[0..-2]
+      rescue
+        Rails.logger.debug "return #{default}"
+        return default
+      end
+    end
 
     def is_homepage(html)
       forum_links = html.css('a').select { |a| a.key?('href') && a['href'] =~ /forumdisplay/ }

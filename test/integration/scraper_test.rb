@@ -4,32 +4,28 @@ require 'test_helper'
 class ScraperTest < ActionDispatch::IntegrationTest
 
   test "scraper can login to a site" do
-    sites_enum = [sites(:two), sites(:three), sites(:four), sites(:five), sites(:six), sites(:eight), sites(:nine), sites(:ten), sites(:eleven), sites(:twelve), sites(:thirteen)]
-    sites_enum.each do |site|
-      scraper = Scraper.create_fetcher(site)
-      scraper.login
+    site = sites(:two)
+    scraper = Scraper.create_fetcher(site)
+    scraper.login
 
-      assert scraper.can_scrape, "scraper cannot scrape for #{site.name}"
-      assert (site.username.nil? && site.password.nil?) || scraper.cookies.size > 2, "no cookies set for #{site.name}"
-    end
+    assert scraper.can_scrape, "scraper cannot scrape for #{site.name}"
+    assert (site.username.nil? && site.password.nil?) || scraper.cookies.size > 2, "no cookies set for #{site.name}"
   end
 
   test "scraper can get forums" do
-    sites_enum = [sites(:two), sites(:three), sites(:four), sites(:five), sites(:six), sites(:eight), sites(:nine), sites(:ten), sites(:eleven), sites(:twelve), sites(:thirteen)]
-    sites_enum.each do |site|
-      site.forums = []
-      site.save!
+    site = sites(:two)
+    site.forums = []
+    site.save!
 
-      assert site.forums.size == 0, "site has forums for #{site}"
+    assert site.forums.size == 0, "site has forums for #{site}"
 
-      scraper = Scraper.create_fetcher site
-      scraper.login
-      forums = scraper.fetch_forums
+    scraper = Scraper.create_fetcher site
+    scraper.login
+    forums = scraper.fetch_forums
 
-      assert !forums.nil?, "forums is null for #{site}"
-      assert forums.size > 0, "forums is 0 for #{site}"
-      assert forums[0].vb_id.kind_of?(Integer), "vb is not an integer but #{forums[0].inspect} for #{site}"
-    end
+    assert !forums.nil?, "forums is null for #{site}"
+    assert forums.size > 0, "forums is 0 for #{site}"
+    assert forums[0].vb_id.kind_of?(Integer), "vb is not an integer but #{forums[0].inspect} for #{site}"
   end
 
   test "scraper can fetch topics" do

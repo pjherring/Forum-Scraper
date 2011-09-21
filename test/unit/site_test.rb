@@ -2,6 +2,7 @@ require 'test_helper'
 
 class SiteTest < ActiveSupport::TestCase
 
+=begin
   test "a site requires the presence of a name and url" do
     site = Site.new
 
@@ -26,6 +27,19 @@ class SiteTest < ActiveSupport::TestCase
     site.fetch_forums
 
     assert_equal Delayed::Job.count, 1, 'did not add delayed job'
+
+  end
+=end
+
+  test "can fetch forums" do
+    site = sites(:two)
+    site.forums.destroy_all
+
+    assert_equal site.forums(true).count, 0, 'the site has forums'
+
+    site.fetch_forums_without_delay
+
+    assert site.forums(true).count > 0, 'the site has no forums'
 
   end
 
