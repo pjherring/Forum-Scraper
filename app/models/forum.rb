@@ -11,8 +11,7 @@ class Forum < ActiveRecord::Base
     self.scraper.can_scrape or self.scraper.login
 
     topics = self.scraper.fetch_topics(self)
-    Rails.logger.info topics.inspect
-    
+
     topics.each do |topic|
 
       if Topic.where(:vb_id => topic.vb_id, :forum_id => self.id).size == 0

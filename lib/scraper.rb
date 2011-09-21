@@ -1,6 +1,7 @@
 require 'rest_client'
 require 'nokogiri'
 require 'digest/md5'
+require 'iconv'
 
 module Scraper
 
@@ -27,9 +28,10 @@ module Scraper
 
   def self.create_fetcher(site)
     @cache ||= {}
+    limit = 3 unless ENV['RAILS_ENV'] == 'production'
 
     unless @cache.key?(site.id)
-      @cache[site.id] = Fetch.new(site)
+      @cache[site.id] = Fetch.new(site, limit)
     end
 
     return @cache[site.id]
@@ -40,9 +42,10 @@ module Scraper
 
     attr_accessor :can_scrape
 
-    def initialize(site)
+    def initialize(site, limit = nil)
       @site = site
       @can_scrape = false
+      @limit = limit
     end
 
     def login
@@ -85,7 +88,7 @@ module Scraper
     end
 
 
-    def fetch_forums(config = {})
+    def fetch_forums
 
       forums = []
 
@@ -94,8 +97,8 @@ module Scraper
 
         forum_links = forum_page.css('a').select { |a| a.key?('href') && a['href'] =~ Scraper::FORUM_LINK_FORMAT }
 
-        if config.key?(:max) && config[:max] < forum_links.size
-          forum_links = forum_links[0..config[:max]]
+        unless @limit.nil?
+          forum_links = forum_links[0..@limit]
         end
 
         forum_links.each do |forum_link|
@@ -113,7 +116,7 @@ module Scraper
 
     end
 
-    def fetch_topics(forum, config = {})
+    def fetch_topics(forum)
       topics = []
 
       if @can_scrape
@@ -126,8 +129,8 @@ module Scraper
           page_links = topics_page.css('div#pagenumbers a').
             select { |a| a.key?('href') && a['href'] =~ Scraper::TopicPageLinks }
 
-          if config.key?(:max_page) && config[:max_page] < page_links.size
-            page_links = page_links[0..config[:max_page]]
+          unless @limit.nil?
+            page_links = page_links[0..@limit]
           end
 
           page_links.each do |page_link|
@@ -154,8 +157,8 @@ module Scraper
           topic_links.push(link)
         end
 
-        if config.key?(:max) && config[:max] < topic_links.size
-          topic_links = topic_links[0..config[:max]]
+        unless @limit.nil?
+          topic_links = topic_links[0..@limit]
         end
 
         topic_links.each do |topic|
@@ -176,7 +179,7 @@ module Scraper
       return topics
     end
 
-    def fetch_messages(topic, config = {})
+    def fetch_messages(topic)
 
       html = fetch_html("#{@site.url}#{Scraper::BaseTopicUrl}#{topic.vb_id}")
 
@@ -199,17 +202,18 @@ module Scraper
 
           #if the block worked try the details
           if posts.size > 0 && posts.css(format[:posted_at]).size > 0 && posts.css(format[:posted_by]) && posts.css(format[:text]).size > 0
-            if config.key?(:max) && config[:max] < posts.size
-              posts = posts[0..config[:max]]
+            unless @limit.nil?
+              posts = posts[0..@limit]
             end
             posts.each do |post|
-              posted_by = post.css(format[:posted_by]).text
+              posted_by = post.css(format[:posted_by])
 
-              if format.key?(:date_format)
-                posted_by = posted_by.match(format[:date_format]).to_s
-              end
-              posted_at = post.css format[:posted_at]
-              text = post.css format[:text]
+
+              posted_at = post.css(format[:posted_at]).text
+              ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
+              posted_at = ic.iconv(posted_at + ' ')[0..-2]
+
+              text = post.css(format[:text]).text
 
               message = Message.new :text => text, :posted_by => posted_by, 
                 :posted_at => posted_at, :topic => topic

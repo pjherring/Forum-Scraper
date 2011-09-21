@@ -29,12 +29,23 @@ class ForumTest < ActiveSupport::TestCase
   test "a forum should be able to scrape topics" do
     forum = forums(:one)
     forum.topics.destroy_all
-
     assert_equal 0, forum.topics.count, 'forum has more than 0 topics'
 
-    forum.fetch_topics
 
-    assert_not_equal 0, forum.topics(true).count, 'forum has 0 topics'
+    mock_topic = Topic.new
+    mock_topic.expects(:fetch_messages).once
+    mock_topic.stubs(:vb_id)
+
+    scraper = Scraper::Fetch.new forum.site
+    scraper.expects(:fetch_topics).with(forum).returns([mock_topic])
+    scraper.expects(:can_scrape).returns(true)
+
+    Topic.expects(:where).returns(['dummyarray'])
+    Topic.any_instance.stubs(:save!)
+
+    forum.expects(:scraper).at_least_once.returns(scraper)
+
+    forum.fetch_topics
   end
 
 end

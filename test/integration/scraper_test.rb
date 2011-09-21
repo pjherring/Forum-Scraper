@@ -24,7 +24,7 @@ class ScraperTest < ActionDispatch::IntegrationTest
 
       scraper = Scraper.create_fetcher site
       scraper.login
-      forums = scraper.fetch_forums({ :max => 2 })
+      forums = scraper.fetch_forums
 
       assert !forums.nil?, "forums is null for #{site}"
       assert forums.size > 0, "forums is 0 for #{site}"
@@ -43,7 +43,7 @@ class ScraperTest < ActionDispatch::IntegrationTest
       scraper = Scraper.create_fetcher forum.site
       scraper.login
 
-      topics = scraper.fetch_topics(forum, {:max => 2, :max_page => 2})
+      topics = scraper.fetch_topics(forum)
 
       assert_not_nil topics
       assert topics.size > 0, "topics is 0 for #{forum.vb_id}"
@@ -55,17 +55,19 @@ class ScraperTest < ActionDispatch::IntegrationTest
     topics_enum = [topics(:two), topics(:three), topics(:four), topics(:five), topics(:six), topics(:eight), topics(:nine), topics(:ten), topics(:eleven), topics(:twelve), topics(:thirteen)]
     topics_enum.each do |topic|
       topic.messages = []
-      topic.save!
+      topic.messages.destroy_all
 
       assert topic.messages.size == 0, "topic has messages for #{topic.vb_id}"
 
       scraper = Scraper.create_fetcher topic.forum.site
       scraper.login
 
-      messages = scraper.fetch_messages(topic, { :max => 2 })
+      messages = scraper.fetch_messages(topic)
       assert_not_nil messages, "messages is nil for #{topic.vb_id}"
       assert messages.size > 0, "messages size is not greater than 0 for #{topic.vb_id}"
+      assert messages[0].kind_of?(Message), 'message is not a Message'
       assert messages[0].text.size > 0, "message has no text for #{topic.vb_id}"
+      assert messages[0].text.kind_of?(String)
     end
 
   end

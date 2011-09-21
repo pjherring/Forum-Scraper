@@ -28,8 +28,7 @@ class TopicTest < ActiveSupport::TestCase
 
   test "a topic should scrape messages" do
     topic = topics(:one)
-    topic.messages = []
-
+    topic.messages.destroy_all
     topic.save!
 
     assert topic.messages.count == 0, 'topic has messages after deleting all messages'
