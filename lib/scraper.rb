@@ -54,12 +54,13 @@ module Scraper
       else
 
         #hit archive, if a 302 then login, otherwise just return true for logged in
-        archive_response = fetch_html(@site.url + Scraper::ArchiveUrl)
+        response = fetch_html(@site.url + Scraper::ArchiveUrl)
+        archive_response = response[:doc]
         login_form = get_login_form(archive_response)
 
         unless login_form.nil?
           #fetch html
-          html = fetch_html(@site.url)
+          html = fetch_html(@site.url)[:doc]
 
           #get the inputs
           inputs = login_form.css('input')
@@ -76,7 +77,7 @@ module Scraper
           @cookies = login_response.cookies
           @can_scrape = true
         else
-          @can_scrape = archive_response.code == 200
+          @can_scrape = response.code == 200
         end
 
       end
@@ -93,7 +94,7 @@ module Scraper
       forums = []
 
       if @can_scrape
-        forum_page = fetch_html(@site.url + Scraper::ArchiveUrl)
+        forum_page = fetch_html(@site.url + Scraper::ArchiveUrl)[:doc]
 
         forum_links = forum_page.css('a').select { |a| a.key?('href') && a['href'] =~ Scraper::FORUM_LINK_FORMAT }
 
@@ -120,7 +121,7 @@ module Scraper
       topics = []
 
       if @can_scrape
-        topics_page = fetch_html("#{@site.url}#{Scraper::BaseForumUrl}#{forum.vb_id}")
+        topics_page = fetch_html("#{@site.url}#{Scraper::BaseForumUrl}#{forum.vb_id}")[:doc]
 
         topic_links = []
 
@@ -135,7 +136,7 @@ module Scraper
 
           page_links.each do |page_link|
 
-            topic_page_html = fetch_html(@site.url + Scraper::ArchiveUrl + '/' + page_link['href'])
+            topic_page_html = fetch_html(@site.url + Scraper::ArchiveUrl + '/' + page_link['href'])[:doc]
 
             page_topic_links = topic_page_html.css('a').
               select { |a| a.key?('href') && a['href'] =~ Scraper::TopicLinkFormat }
@@ -181,13 +182,13 @@ module Scraper
 
     def fetch_messages(topic)
 
-      html = fetch_html("#{@site.url}#{Scraper::BaseTopicUrl}#{topic.vb_id}")
+      html = fetch_html("#{@site.url}#{Scraper::BaseTopicUrl}#{topic.vb_id}")[:doc]
 
       if is_homepage(html)
         begin
-          html = fetch_html(@site.url + Scraper::BASE_TOPIC_DISPLAY_URL + topic.vb_id)
+          html = fetch_html(@site.url + Scraper::BASE_TOPIC_DISPLAY_URL + topic.vb_id)[:doc]
         rescue
-          html = fetch_html(@site.url + Scraper::BASE_TOPIC_DISPLAY_URL.match(/(.*)t=/)[1].to_s + topic.vb_id)
+          html = fetch_html(@site.url + Scraper::BASE_TOPIC_DISPLAY_URL.match(/(.*)t=/)[1].to_s + topic.vb_id)[:doc]
         end
 
       end
@@ -287,7 +288,7 @@ module Scraper
       response = RestClient.get(url, { :cookies => @cookies })
 
       if response.code == 200
-        return Nokogiri::HTML(response)
+        return { :doc => Nokogiri::HTML(response), :response => response }
       elsif response.code == 301
         raise Scraper::PermanentlyMovedException
       end
